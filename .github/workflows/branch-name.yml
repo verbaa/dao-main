@@ -1,0 +1,24 @@
+name: 🔍 Lint Branch Name
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  branch-name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name
+        run: |
+          BRANCH_NAME="${{ github.head_ref }}"
+          echo "Branch name: $BRANCH_NAME"
+
+          PATTERN="^(feature|bugfix)\/[A-Z]+-[0-9]+[-a-z0-9]*$"
+          if [[ ! $BRANCH_NAME =~ $PATTERN ]]; then
+            echo "❌ Invalid branch name: $BRANCH_NAME"
+            echo "Branch names must match: feature/TT-1-task-name or bugfix/TT-1-fix-name"
+            exit 1
+          fi
+
+          echo "✅ Valid branch name."
+
