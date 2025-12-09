@@ -1,7 +1,10 @@
 import {useAppKit} from '@reown/appkit/react';
-import {useAccount, useDisconnect, useBalance, useSwitchChain} from 'wagmi';
-import {hoodi} from "../../config/customNetworks.ts";
+import {useAccount, useDisconnect, useSwitchChain} from 'wagmi';
 import Blockies from 'react-blockies';
+import WrongNetwork from "../WrongNetwork";
+import BalanceDisplay from "../BalanceDisplay";
+import {CONTRACTS, CONTRACTS_ADDRESSES} from "../../contracts";
+import {hoodi} from "../../config/customNetworks";
 
 import styles from './WalletConnect.module.scss';
 
@@ -10,10 +13,6 @@ const WalletConnect = () => {
   const {address, isConnected, chainId, chain} = useAccount();
   const {disconnect} = useDisconnect();
   const {switchChain} = useSwitchChain();
-
-  const {data: balance} = useBalance({
-    address: address,
-  });
 
   if (typeof window === "undefined") {
     return null;
@@ -32,27 +31,11 @@ const WalletConnect = () => {
 
   if (chainId !== hoodi.id) {
     return (
-      <div className={styles.wrongNetwork}>
-        <h3>⚠️ Wrong Network</h3>
-        <p>You are connected to <b>{chain?.name || 'Unknown Network'}</b></p>
-        <p>Please switch to <b>{hoodi.name}</b></p>
-
-        <div className={styles.actions}>
-          <button
-            onClick={() => switchChain({chainId: hoodi.id as number})}
-            className={styles.switch}
-          >
-            Switch to Hoodi
-          </button>
-
-          <button
-            onClick={() => disconnect()}
-            className={styles.disconnect}
-          >
-            Disconnect
-          </button>
-        </div>
-      </div>
+      <WrongNetwork
+        chainName={chain?.name}
+        onSwitch={(id) => switchChain({chainId: id})}
+        onDisconnect={() => disconnect()}
+      />
     );
   }
 
@@ -76,10 +59,12 @@ const WalletConnect = () => {
       </div>
 
       <div className={styles.section}>
-        <strong>Balance:</strong>
-        <div className={styles.balanceValue}>
-          {balance ? `${Number(balance.formatted).toFixed(4)} ${balance.symbol}` : 'Loading...'}
-        </div>
+        <BalanceDisplay label="Native Balance"/>
+
+        <BalanceDisplay
+          label="Hoodi Token"
+          tokenAddress={CONTRACTS_ADDRESSES[CONTRACTS.TOKEN_CONTRACT]}
+        />
       </div>
 
       <button
