@@ -13,3 +13,12 @@ export type BalanceType = {
   symbol: string
   value: bigint
 }
+
+export interface IWeb3Error extends Error {
+  code?: number;
+}
+
+export interface IAuthContextType {
+  isAuthenticated: boolean;
+  setIsAuthenticated: (value: boolean) => void;
+}

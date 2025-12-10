@@ -3,12 +3,12 @@ import {Address} from 'viem';
 
 import styles from './BalanceDisplay.module.scss';
 
-type BalanceDisplayProps = {
+type Props = {
   tokenAddress?: Address;
   label: string;
 };
 
-const BalanceDisplay = ({tokenAddress, label}: BalanceDisplayProps) => {
+const BalanceDisplay = ({tokenAddress, label}: Props) => {
   const {address} = useAccount();
 
   const {data, isLoading, isError} = useBalance({
