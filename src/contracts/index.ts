@@ -16,3 +16,10 @@ export const CONTRACT_ABIS = {
   [CONTRACTS.DAO_CONTRACT]: DaoContractAbi,
   [CONTRACTS.TOKEN_CONTRACT]: TokenAbi,
 }
+
+export function getContractInfo(name: keyof typeof CONTRACTS_ADDRESSES) {
+  return {
+    address: CONTRACTS_ADDRESSES[name],
+    abi: CONTRACT_ABIS[name],
+  };
+}

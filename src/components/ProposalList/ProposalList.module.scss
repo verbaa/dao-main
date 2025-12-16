@@ -1,0 +1,14 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+  background: #f9f9f9;
+  border-radius: 12px;
+  border: 1px dashed #ccc;
+}
