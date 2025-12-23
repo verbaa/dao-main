@@ -46,7 +46,7 @@ const WalletConnect = () => {
           <Blockies seed={address?.toLowerCase() || ''} size={10} scale={4}/>
         </div>
         <div>
-          <span className={styles.status}>● Connected</span>
+          <span className={styles.status}>Connected</span>
           <span className={styles.networkName}>{chain?.name} (ID: {chainId})</span>
         </div>
       </div>
@@ -66,13 +66,6 @@ const WalletConnect = () => {
           tokenAddress={CONTRACTS_ADDRESSES[CONTRACTS.TOKEN_CONTRACT]}
         />
       </div>
-
-      <button
-        onClick={() => disconnect()}
-        className={styles.disconnectButton}
-      >
-        Disconnect
-      </button>
     </div>
   );
 };

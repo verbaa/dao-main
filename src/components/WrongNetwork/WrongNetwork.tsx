@@ -11,7 +11,7 @@ type WrongNetworkProps = {
 const WrongNetwork = ({chainName, onSwitch, onDisconnect}: WrongNetworkProps) => {
   return (
     <div className={styles.wrongNetwork}>
-      <h3>⚠️ Wrong Network</h3>
+      <h3>Wrong Network</h3>
       <p>You are connected to <b>{chainName || 'Unknown Network'}</b></p>
       <p>Please switch to <b>{hoodi.name}</b></p>
 

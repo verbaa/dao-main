@@ -24,7 +24,7 @@ const CreateProposalForm = () => {
       <form onSubmit={handleSubmit}>
         <textarea
           className={styles.textarea}
-          placeholder="Describe your proposal (e.g. 'Donate 100 ETH to charity')..."
+          placeholder="Describe your proposal"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           disabled={isSigning}

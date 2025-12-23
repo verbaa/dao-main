@@ -15,7 +15,6 @@ export function useVoteOnProposal() {
 
   async function vote({ id, support }: { id: string; support: boolean }) {
     try {
-      toast.loading("Sign the transaction in your wallet…", { id: toastIdRef.current });
 
       const txHash = await writeContractAsync({
         address: contractInfo.address as `0x${string}`,

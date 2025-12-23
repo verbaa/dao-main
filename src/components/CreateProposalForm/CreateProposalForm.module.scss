@@ -1,51 +1,84 @@
 .card {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  margin-bottom: 30px;
-  border: 1px solid #eaeaea;
+  background: var(--bg-card);
+  backdrop-filter: var(--glass-effect);
+  padding: 25px;
+  clip-path: polygon(
+                  0 0,
+                  100% 0,
+                  100% calc(100% - 20px),
+                  calc(100% - 20px) 100%,
+                  0 100%
+  );
+  border: 1px solid rgba(0, 243, 255, 0.3);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  margin-bottom: 40px;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--neon-cyan);
+    box-shadow: 0 0 10px var(--neon-cyan);
+  }
 
   h3 {
+    color: var(--neon-cyan);
     margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 1.2rem;
-    color: #333;
+    border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+    padding-bottom: 10px;
   }
 }
 
 .textarea {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  resize: vertical;
-  font-family: inherit;
-  margin-bottom: 10px;
-  transition: border 0.2s;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid #333;
+  color: var(--neon-green);
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  border-radius: 0;
+  margin-bottom: 15px;
+  transition: 0.3s;
+  box-sizing: border-box;
 
   &:focus {
-    border-color: #4CAF50;
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
     outline: none;
+  }
+
+  &::placeholder {
+    color: rgba(10, 255, 10, 0.3);
   }
 }
 
 .submitBtn {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 600;
+  background: transparent;
+  color: var(--neon-cyan);
+  border: 1px solid var(--neon-cyan);
+  padding: 12px 30px;
+  font-family: var(--font-header);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   cursor: pointer;
-  transition: opacity 0.2s;
-
-  &:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
+  transition: all 0.3s ease;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
 
   &:hover:not(:disabled) {
-    opacity: 0.9;
+    background: var(--neon-cyan);
+    color: #000;
+    box-shadow: 0 0 20px var(--neon-cyan);
+  }
+
+  &:disabled {
+    border-color: #555;
+    color: #555;
+    cursor: not-allowed;
   }
 }
