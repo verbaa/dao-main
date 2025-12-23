@@ -54,7 +54,10 @@ const ProposalListener = () => {
     onLogs(logs) {
       logs.forEach((log: any) => {
         const id = log.args?.id?.toString();
-        toast.success(`⚡ Proposal #${id} EXECUTED successfully!`);
+
+        toast.success(`Proposal #${id} successfully EXECUTED!`, {
+          duration: 6000,
+        });
         emit('proposalExecuted', { id });
       });
     },

@@ -1,24 +1,62 @@
-.balanceItem {
+.container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px dashed #eee;
+  padding: 10px 0;
+  border-bottom: 1px dashed rgba(0, 243, 255, 0.2);
+  font-family: var(--font-mono);
 
   &:last-child {
     border-bottom: none;
   }
+}
 
-  strong {
-    font-size: 14px;
-    color: #555;
-    font-weight: 500;
-  }
+.label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
 
-  .value {
-    font-family: 'Roboto Mono', monospace;
-    font-weight: 700;
-    color: #333;
-    font-size: 15px;
+.valueGroup {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.amount {
+  color: var(--neon-cyan);
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-shadow: 0 0 5px rgba(0, 243, 255, 0.3);
+  letter-spacing: 0.5px;
+}
+
+.symbol {
+  color: var(--neon-pink);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.loading {
+  padding: 10px 0;
+  color: var(--neon-green);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  animation: blink 1s infinite steps(2, start);
+  text-align: right;
+}
+
+.error {
+  padding: 10px 0;
+  color: var(--neon-red);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  text-align: right;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
   }
 }
