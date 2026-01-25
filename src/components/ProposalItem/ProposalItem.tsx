@@ -73,12 +73,15 @@ const ProposalItem = ({id}: ProposalItemProps) => {
       return;
     }
 
+    const toastId = toast.loading("Transaction sent. Waiting for block...");
+
     try {
-      await vote({id, support});
-      toast.loading("Transaction sent. Waiting for block...", {id: toastId});
+      await vote({ id, support });
+
+      toast.success("Vote cast successfully!", { id: toastId });
     } catch (error) {
       console.error(error);
-      toast.error("Vote rejected", {id: toastId});
+      toast.error("Vote rejected", { id: toastId });
     }
   };
 
