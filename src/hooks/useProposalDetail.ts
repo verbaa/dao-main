@@ -36,7 +36,6 @@ function normalizeProposal(data: any, votedProposals: string[] = []): ProposalDe
     };
   }
 
-  // Повернення як object (деякі контракти/генератори ABI)
   if (typeof data === "object" && "id" in data) {
     const obj = data as Record<string, unknown>;
     const idStr = (obj.id as bigint).toString();

@@ -1,8 +1,12 @@
 import {useState, useEffect} from 'react';
 import toast from 'react-hot-toast';
+import {useAccount, useBalance} from 'wagmi';
 import {useProposalDetail} from '../../hooks/useProposalDetail';
 import {useVoteOnProposal} from '../../hooks/useVoteOnProposal';
 import {useExecuteProposal} from '../../hooks/useExecuteProposal';
+import {on, off} from "../../helpers/eventBus";
+import {CONTRACTS, CONTRACTS_ADDRESSES} from "../../contracts";
+import {MIN_TOKENS_REQUIRED} from "../../constants";
 
 import styles from './ProposalItem.module.scss';
 
@@ -11,17 +15,42 @@ type ProposalItemProps = {
 };
 
 const ProposalItem = ({id}: ProposalItemProps) => {
-  const {proposal, isLoading} = useProposalDetail(id);
+  const {address} = useAccount();
+  const {proposal, isLoading, refetch} = useProposalDetail(id);
   const {vote, isSigning} = useVoteOnProposal();
   const {execute, isExecuting} = useExecuteProposal();
 
   const [currentTime, setCurrentTime] = useState<number>(Date.now() / 1000);
 
+  const {data: tokenData, isLoading: isBalanceLoading} = useBalance({
+    address: address,
+    token: CONTRACTS_ADDRESSES[CONTRACTS.TOKEN_CONTRACT] as `0x${string}`,
+  });
+
+  const userBalance = tokenData ? Number(tokenData.formatted) : 0;
+  const hasEnoughTokens = userBalance >= MIN_TOKENS_REQUIRED;
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setTimeout(() => {
+        refetch();
+      }, 7000);
+    };
+
+    on('proposalVoted', handleUpdate);
+    on('proposalExecuted', handleUpdate);
+
+    return () => {
+      off('proposalVoted', handleUpdate);
+      off('proposalExecuted', handleUpdate);
+    };
+  }, [id, refetch]);
+
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(Date.now() / 1000);
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
@@ -31,21 +60,43 @@ const ProposalItem = ({id}: ProposalItemProps) => {
   const isVotingClosed = currentTime >= proposal.deadline;
   const isPassing = proposal.voteCountFor > proposal.voteCountAgainst;
   const canExecute = isVotingClosed && isPassing && !proposal.executed;
-  const deadlineDate = new Date(Number(proposal.deadline) * 1000).toLocaleString();
+
+  const timeLeft = Math.max(0, proposal.deadline - currentTime);
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = Math.floor(timeLeft % 60);
+  const timerDisplay = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
   const handleVote = async (support: boolean) => {
-    const toastId = toast.loading("Processing vote...");
+
+    if (!hasEnoughTokens) {
+      toast.error(`Insufficient funds. You need ${MIN_TOKENS_REQUIRED} SVER to vote.`);
+      return;
+    }
+
+    const toastId = toast.loading("Transaction sent. Waiting for block...");
+
     try {
-      await vote({id, support});
-      toast.loading("Transaction sent. Waiting for block...", {id: toastId});
+      await vote({ id, support });
+
+      toast.success("Vote cast successfully!", { id: toastId });
     } catch (error) {
       console.error(error);
-      toast.error("Failed to vote", {id: toastId});
+      toast.error("Vote rejected", { id: toastId });
     }
   };
 
-  const handleExecute = () => {
-    execute(id);
+  const handleExecute = async () => {
+    const toastId = toast.loading("Executing proposal...");
+    try {
+      await execute(id);
+      toast.success("Execution transaction sent! Waiting...", {
+        id: toastId,
+        duration: 8000
+      });
+    } catch (error: any) {
+      console.error(error);
+      toast.error("Execution failed or rejected", {id: toastId});
+    }
   };
 
   return (
@@ -66,34 +117,52 @@ const ProposalItem = ({id}: ProposalItemProps) => {
 
       <div className={styles.stats}>
         <div className={styles.statItem}>
-          <span className={styles.label}>👍 For</span>
+          <span className={styles.label}>For</span>
           <span className={styles.value}>{proposal.voteCountFor}</span>
         </div>
         <div className={styles.statItem}>
-          <span className={styles.label}>👎 Against</span>
+          <span className={styles.label}>Against</span>
           <span className={styles.value}>{proposal.voteCountAgainst}</span>
         </div>
         <div className={styles.statItem}>
-          <span className={styles.label}>⏰ Deadline</span>
-          <span className={styles.value} style={{fontSize: '12px'}}>
-            {deadlineDate}
+          <span className={styles.label}>
+            {isVotingClosed ? "Ended At" : "Time Left"}
+          </span>
+          <span
+            className={styles.value}
+            style={{
+              color: isVotingClosed ? 'var(--text-muted)' : 'var(--neon-green)',
+              textShadow: isVotingClosed ? 'none' : '0 0 5px var(--neon-green)'
+            }}
+          >
+            {isVotingClosed
+              ? new Date(Number(proposal.deadline) * 1000).toLocaleTimeString()
+              : `${timerDisplay}`
+            }
           </span>
         </div>
       </div>
+
+      {!hasEnoughTokens && !isVotingClosed && !proposal.executed && (
+        <div className={styles.warningBox}>
+          ACCESS DENIED: Insufficient Voting Power <br/>
+          <small>Required: {MIN_TOKENS_REQUIRED} SVER | You have: {userBalance.toFixed(2)} SVER</small>
+        </div>
+      )}
 
       <div className={styles.actions}>
         {!isVotingClosed && !proposal.executed && (
           <>
             <button
               onClick={() => handleVote(true)}
-              disabled={isSigning || proposal.hasVoted}
+              disabled={isSigning || proposal.hasVoted || !hasEnoughTokens || isBalanceLoading}
               className={`${styles.voteBtn} ${styles.yes}`}
             >
               Vote For
             </button>
             <button
               onClick={() => handleVote(false)}
-              disabled={isSigning || proposal.hasVoted}
+              disabled={isSigning || proposal.hasVoted || !hasEnoughTokens || isBalanceLoading}
               className={`${styles.voteBtn} ${styles.no}`}
             >
               Vote Against
@@ -107,7 +176,7 @@ const ProposalItem = ({id}: ProposalItemProps) => {
             disabled={isExecuting}
             className={styles.executeBtn}
           >
-            {isExecuting ? 'Executing...' : 'Execute Proposal'}
+            {isExecuting ? 'PROCESSING...' : 'EXECUTE PROPOSAL'}
           </button>
         )}
 

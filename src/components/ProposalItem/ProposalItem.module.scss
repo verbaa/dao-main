@@ -1,41 +1,29 @@
-$color-green-bg: #e8f5e9;
-$color-green-text: #2e7d32;
-$color-red-bg: #ffebee;
-$color-red-text: #c62828;
-$color-blue-bg: #e3f2fd;
-$color-blue-text: #1976d2;
-$color-gray-bg: #f5f5f5;
-$color-text-main: #333;
-$color-text-muted: #666;
-
 .card {
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 20px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: rgba(10, 10, 20, 0.9);
+  border: 1px solid var(--neon-cyan);
+  box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+  border-radius: 0;
+  padding: 30px;
   position: relative;
-  overflow: hidden;
 
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-    border-color: #ccc;
+  &::before {
+    content: "SYSTEM_ACCESS // VOTING_MODULE";
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: var(--bg-dark);
+    padding: 0 10px;
+    color: var(--neon-cyan);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 2px;
   }
 
   &.executed {
-    background-color: #fafafa;
-    border-color: #eee;
-
-    .description {
-      color: #888;
-    }
-
-    .stats {
-      background-color: #eee;
-      opacity: 0.7;
-    }
+    border-color: var(--text-muted);
+    opacity: 0.8;
+    filter: grayscale(0.8);
+    box-shadow: none;
   }
 }
 
@@ -43,195 +31,196 @@ $color-text-muted: #666;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  gap: 10px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+  padding-bottom: 15px;
 }
 
 .id {
-  font-family: 'Courier New', monospace;
-  font-weight: 700;
-  color: #999;
-  font-size: 14px;
-}
-
-.badge, .votedBadge, .closedBadge {
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: var(--neon-pink);
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
 }
 
 .badge {
-  background: #eee;
-  color: #555;
-  border: 1px solid #ddd;
+  padding: 5px 15px;
+  font-family: var(--font-header);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  border: 1px solid;
 }
 
-.votedBadge {
-  background: $color-blue-bg;
-  color: $color-blue-text;
-  border: 1px solid transparent;
+.badgeActive {
+  color: var(--neon-green);
+  border-color: var(--neon-green);
+  box-shadow: 0 0 8px var(--neon-green);
 }
 
-.closedBadge {
-  background: $color-red-bg;
-  color: $color-red-text;
+.badgeClosed {
+  color: var(--neon-red);
+  border-color: var(--neon-red);
+}
+
+.badgeExecuted {
+  color: #fff;
+  border-color: #fff;
 }
 
 .description {
-  font-size: 16px;
-  line-height: 1.6;
-  color: $color-text-main;
-  margin-bottom: 24px;
-  word-wrap: break-word;
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 30px;
+  font-weight: 300;
 }
 
 .stats {
-  display: flex;
-  gap: 30px;
-  background-color: $color-gray-bg;
-  padding: 16px;
-  border-radius: 8px;
-  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 20px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .statItem {
   display: flex;
   flex-direction: column;
+  align-items: center;
 
   .label {
-    font-size: 11px;
-    text-transform: uppercase;
-    color: $color-text-muted;
-    font-weight: 600;
-    margin-bottom: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 5px;
   }
 
   .value {
-    font-size: 18px;
-    font-weight: 700;
-    color: $color-text-main;
-    font-family: monospace;
+    font-family: var(--font-header);
+    font-size: 1.5rem;
+    color: white;
   }
 }
 
 .actions {
   display: flex;
-  gap: 16px;
+  gap: 20px;
+}
+
+.warningBox {
+  background: rgba(255, 0, 60, 0.1);
+  border: 1px dashed var(--neon-red);
+  color: var(--neon-red);
+  padding: 15px;
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  animation: flicker 2s infinite;
+
+  small {
+    color: white;
+    font-size: 0.8em;
+    display: block;
+    margin-top: 5px;
+  }
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 5px var(--neon-red);
+  }
+  20%, 24%, 55% {
+    opacity: 0.5;
+    text-shadow: none;
+  }
 }
 
 .voteBtn {
   flex: 1;
-  padding: 12px;
+  padding: 15px;
   border: none;
-  border-radius: 8px;
+  font-family: var(--font-header);
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 1px;
   cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: 0.2s;
+  clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
 
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.3;
     cursor: not-allowed;
     filter: grayscale(100%);
+    border-color: #444;
+    color: #666;
+    box-shadow: none !important;
+    background: transparent !important;
   }
 
   &.yes {
-    background-color: $color-green-bg;
-    color: $color-green-text;
-    border: 1px solid transparent;
+    background: transparent;
+    border: 1px solid var(--neon-green);
+    color: var(--neon-green);
 
     &:hover:not(:disabled) {
-      background-color: darken($color-green-bg, 5%);
-      border-color: $color-green-text;
+      background: var(--neon-green);
+      color: black;
+      box-shadow: 0 0 20px var(--neon-green);
     }
   }
 
   &.no {
-    background-color: $color-red-bg;
-    color: $color-red-text;
-    border: 1px solid transparent;
+    background: transparent;
+    border: 1px solid var(--neon-red);
+    color: var(--neon-red);
 
     &:hover:not(:disabled) {
-      background-color: darken($color-red-bg, 5%);
-      border-color: $color-red-text;
+      background: var(--neon-red);
+      color: black;
+      box-shadow: 0 0 20px var(--neon-red);
     }
   }
-}
 
-.loading {
-  padding: 40px;
-  text-align: center;
-  color: #999;
-  font-style: italic;
-  background: white;
-  border-radius: 12px;
-  border: 1px dashed #ddd;
-  margin-bottom: 10px;
-}
-
-.badge {
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.badgeActive {
-  background: #e3f2fd;
-  color: #1976d2;
-}
-
-.badgeClosed {
-  background: #fff3e0;
-  color: #f57c00;
-}
-
-.badgeExecuted {
-  background: #e8f5e9;
-  color: #2e7d32;
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: #555;
+    color: #555;
+  }
 }
 
 .executeBtn {
   width: 100%;
-  padding: 14px;
-  margin-top: 10px;
-  background: #6200ea;
+  padding: 15px;
+  margin-top: 15px;
+  background: var(--neon-pink);
   color: white;
   border: none;
-  border-radius: 8px;
+  font-family: var(--font-header);
   font-weight: bold;
-  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
   cursor: pointer;
-  transition: background 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  box-shadow: 0 0 15px var(--neon-pink);
 
-  &:hover {
-    background: #5000d0;
+  &:hover:not(:disabled) {
+    background: #e040fb;
+    box-shadow: 0 0 25px #e040fb;
   }
 
   &:disabled {
-    background: #b39ddb;
-    cursor: not-allowed;
+    background: #555;
+    box-shadow: none;
   }
 }
 
 .failureMessage {
-  width: 100%;
   text-align: center;
-  color: #c62828;
-  background: #ffebee;
+  color: var(--neon-red);
+  border: 1px solid var(--neon-red);
   padding: 10px;
-  border-radius: 8px;
-  font-weight: 600;
+  background: rgba(255, 0, 60, 0.1);
 }

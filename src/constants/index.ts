@@ -14,3 +14,8 @@ export const MESSAGES = {
 };
 
 export const USER_REJECTED_CODE = 4001;
+
+export const MIN_TOKENS_REQUIRED = 100;
+
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+console.log('API URL:', API_BASE_URL); // Має вивести посилання, а не undefined
